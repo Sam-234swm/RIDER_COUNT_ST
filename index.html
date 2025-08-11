@@ -1,347 +1,53 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Editable Operations Table</title>
-<style>
-  :root{
-    --bg:#f7f2e6;          /* page background */
-    --table-bg:#fff7e6;    /* pale yellow row bg */
-    --header-peach:#f4c9b8;/* peach header */
-    --manpower-header:#ffd7b5;
-    --grn-blue:#dff0fb;    /* light blue for GRN */
-    --green-store:#0f9d58; /* store name green */
-    --green-store-text:#ffffff;
-    --cell-border:#e0d3c7;
-    --input-bg:#fff;
-    --muted:#666;
-    --accent:#e6b89b;
-    font-family: "Segoe UI", Roboto, Arial, sans-serif;
-  }
-
-  body{
-    margin:0;
-    padding:24px;
-    background:var(--bg);
-    color:#222;
-  }
-
-  .card{
-    max-width:1200px;
-    margin:0 auto;
-    background:var(--table-bg);
-    padding:12px;
-    border-radius:8px;
-    box-shadow:0 8px 24px rgba(0,0,0,0.08);
-    overflow:auto;
-  }
-
-  h1{
-    font-size:20px;
-    margin:0 0 12px 0;
-    font-weight:600;
-  }
-
-  table{
-    border-collapse:collapse;
-    width:100%;
-    min-width:1100px; /* allow horizontal scroll on small screens */
-    table-layout:fixed;
-  }
-
-  thead th{
-    padding:8px 10px;
-    text-align:left;
-    vertical-align:bottom;
-    border:1px solid var(--cell-border);
-    font-size:13px;
-    line-height:1.1;
-  }
-
-  /* Column group backgrounds */
-  thead th.city-col{ background:var(--table-bg); }
-  thead th.store-col{ background:var(--table-bg); }
-  thead th.manpower{ background:var(--manpower-header); }
-  thead th.grn{ background:var(--grn-blue); }
-  thead th.rto{ background:var(--header-peach); }
-  thead th.courier{ background:var(--header-peach); }
-  thead th.scan{ background:var(--header-peach); }
-
-  tbody td{
-    padding:6px 8px;
-    border:1px solid var(--cell-border);
-    background: #fffaf0;
-    font-size:14px;
-    vertical-align:middle;
-    text-align:left;
-  }
-
-  /* City column style */
-  .city{
-    font-weight:700;
-    width:160px;
-    background:var(--table-bg);
-  }
-
-  /* Store name style (green blocks like screenshot) */
-  .store{
-    background:linear-gradient(180deg,var(--green-store) 0%, #0c7a45 100%);
-    color:var(--green-store-text);
-    padding:0;
-  }
-  .store input{
-    width:100%;
-    border:none;
-    background:transparent;
-    color:var(--green-store-text);
-    padding:8px;
-    font-weight:700;
-    box-sizing:border-box;
-    outline:none;
-  }
-
-  /* Inputs for numbers/text (no default borders, but visible focus) */
-  .cell-input{
-    width:100%;
-    border:none;
-    background:transparent;
-    font-size:14px;
-    padding:6px 4px;
-    box-sizing:border-box;
-    outline:none;
-    color:#111;
-  }
-  .cell-input[type="number"]{
-    text-align:right;
-  }
-
-  /* Make header text small and uppercase-ish */
-  thead th .col-title{
-    display:block;
-    font-weight:700;
-    font-size:12px;
-    color:#222;
-  }
-  thead th .col-sub{
-    display:block;
-    font-size:11px;
-    color:var(--muted);
-    margin-top:4px;
-  }
-
-  /* special column widths to match screenshot proportions */
-  .col-city{ width:140px; }
-  .col-store{ width:180px; }
-  .col-manpower-small{ width:60px; text-align:center; }
-  .col-manpower-wide{ width:260px; }
-  .col-grn{ width:160px; }
-  .col-rto{ width:100px; }
-  .col-courier{ width:140px; }
-  .col-scan{ width:160px; }
-
-  /* focus style for inputs */
-  .cell-input:focus, .store input:focus{
-    background:#fff;
-    box-shadow:0 0 0 2px rgba(0,120,200,0.12);
-    border-radius:4px;
-  }
-
-  /* small helper footer */
-  .instructions{
-    margin-top:10px;
-    font-size:13px;
-    color:var(--muted);
-  }
-
-  /* Responsive: allow horizontal scroll on small screens */
-  @media (max-width:900px){
-    .card{ padding:8px; }
-    table{ min-width:1000px; }
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store Table</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="card">
-    <h1>Operations: Editable Store Table</h1>
 
-    <table role="grid" aria-label="Editable operations table">
-      <thead>
-        <tr>
-          <th class="city-col col-city"><span class="col-title">City</span></th>
-          <th class="store-col col-store"><span class="col-title">Store Name</span></th>
-
-          <!-- Manpower DAU group -->
-          <th class="manpower col-manpower-small"><span class="col-title">PP</span><span class="col-sub">Manpower DAU</span></th>
-          <th class="manpower col-manpower-small"><span class="col-title">IC</span></th>
-          <th class="manpower col-manpower-small"><span class="col-title">SM</span></th>
-          <th class="manpower col-manpower-small"><span class="col-title">Riders</span></th>
-
-          <!-- GRN Pendency (Invoice) group -->
-          <th class="grn col-grn"><span class="col-title">Category</span><span class="col-sub">GRN Pendency (Invoice)</span></th>
-          <th class="grn col-grn"><span class="col-title">Pharma</span></th>
-
-          <!-- RTO Pendency -->
-          <th class="rto col-rto"><span class="col-title"># of Orders</span><span class="col-sub">RTO Pendency</span></th>
-
-          <!-- Courier Dispatch Pendency -->
-          <th class="courier col-courier"><span class="col-title">Pending</span><span class="col-sub">Courier Dispatch Pendency</span></th>
-
-          <!-- Did Courier Scan -->
-          <th class="scan col-scan"><span class="col-title">Did Courier Scan all shipments (by SM)</span></th>
-        </tr>
-      </thead>
-
-      <tbody>
-        <!-- Example row: Bangalore / BTM Layout -->
-        <tr>
-          <td class="city"><input class="cell-input" value="Bangalore" /></td>
-          <td class="store"><input value="BTM Layout" /></td>
-
-          <td><input class="cell-input" type="number" placeholder="3" /></td>
-          <td><input class="cell-input" type="number" placeholder="1" /></td>
-          <td><input class="cell-input" type="number" placeholder="0" /></td>
-          <td><input class="cell-input" type="number" placeholder="6" /></td>
-
-          <td><input class="cell-input" type="number" placeholder="1" /></td>
-          <td><input class="cell-input" type="number" placeholder="0" /></td>
-
-          <td><input class="cell-input" type="number" placeholder="0" /></td>
-
-          <td><input class="cell-input" type="number" placeholder="0" /></td>
-
-          <td>
-            <select class="cell-input" style="padding:6px;">
-              <option>Yes</option>
-              <option>No</option>
-            </select>
-          </td>
-        </tr>
-
-        <!-- Copy these rows are examples — users can change values -->
-        <tr>
-          <td class="city"><input class="cell-input" value="Bangalore" /></td>
-          <td class="store"><input value="Kalyan Nagar" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td>
-            <select class="cell-input" style="padding:6px;">
-              <option>Yes</option>
-              <option>No</option>
-            </select>
-          </td>
-        </tr>
-
-        <tr>
-          <td class="city"><input class="cell-input" value="Bangalore" /></td>
-          <td class="store"><input value="Varthur" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td>
-            <select class="cell-input" style="padding:6px;">
-              <option>Yes</option>
-              <option>No</option>
-            </select>
-          </td>
-        </tr>
-
-        <!-- add more rows following same structure -->
-        <tr>
-          <td class="city"><input class="cell-input" value="Hyderabad" /></td>
-          <td class="store"><input value="Manikonda" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td>
-            <select class="cell-input" style="padding:6px;">
-              <option>Yes</option>
-              <option>No</option>
-            </select>
-          </td>
-        </tr>
-
-        <tr>
-          <td class="city"><input class="cell-input" value="Kolkata" /></td>
-          <td class="store"><input value="Kolkata" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td>
-            <select class="cell-input" style="padding:6px;">
-              <option>Yes</option>
-              <option>No</option>
-            </select>
-          </td>
-        </tr>
-
-        <!-- last sample row -->
-        <tr>
-          <td class="city"><input class="cell-input" value="Mumbai" /></td>
-          <td class="store"><input value="Andheri" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td><input class="cell-input" type="number" /></td>
-          <td>
-            <select class="cell-input" style="padding:6px;">
-              <option>Yes</option>
-              <option>No</option>
-            </select>
-          </td>
-        </tr>
-
-      </tbody>
+    <table>
+        <thead>
+            <tr>
+                <th rowspan="2" class="yellow">City</th>
+                <th rowspan="2" class="green">Store Name</th>
+                <th colspan="4" class="purple">Manpower DAU</th>
+                <th colspan="2" class="blue">GRN Pendency (Invoice)</th>
+                <th rowspan="2" class="orange">RTO Pendency (# of Orders)</th>
+                <th rowspan="2" class="blue">Courier Dispatch Pendency</th>
+                <th colspan="2" class="orange">Did Courier Scan all shipments (by SM)</th>
+            </tr>
+            <tr>
+                <th>PP</th>
+                <th>IC</th>
+                <th>SM</th>
+                <th>Riders</th>
+                <th>Category</th>
+                <th>Pharma</th>
+                <th>Pending</th>
+                <th>#</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Bangalore</td>
+                <td contenteditable="true">BTM Layout</td>
+                <td contenteditable="true">3</td>
+                <td contenteditable="true">1</td>
+                <td contenteditable="true">0</td>
+                <td contenteditable="true">6</td>
+                <td contenteditable="true">1</td>
+                <td contenteditable="true">0</td>
+                <td contenteditable="true">0</td>
+                <td contenteditable="true">0</td>
+                <td contenteditable="true">Yes</td>
+            </tr>
+            <!-- Add more rows as needed -->
+        </tbody>
     </table>
 
-    <div class="instructions">
-      Tip: Click any cell to edit. Use numeric inputs for counts. Save this file to GitHub as <code>index.html</code> and enable GitHub Pages (branch: main) to publish.
-    </div>
-  </div>
-
-<script>
-  // Small helper: pressing Enter in an input moves focus to the next input in the table (like a spreadsheet)
-  document.addEventListener('keydown', function(e){
-    if(e.key === 'Enter'){
-      const el = document.activeElement;
-      if(el && (el.tagName === 'INPUT' || el.tagName === 'SELECT')){
-        e.preventDefault();
-        // gather editable elements in DOM order
-        const editables = Array.from(document.querySelectorAll('.cell-input, .store input'));
-        const idx = editables.indexOf(el);
-        if(idx >= 0){
-          const next = editables[idx+1] || editables[0];
-          next.focus();
-          if(next.select) next.select();
-        }
-      }
-    }
-  });
-</script>
+<script src="script.js"></script>
 </body>
 </html>
